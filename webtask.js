@@ -1,8 +1,21 @@
+
+var fs = require('fs');
+fs.readdir(path, function(err, items) {
+  console.log(items);
+
+  for (var i=0; i<items.length; i++) {
+      console.log(items[i]);
+  }
+});
+
 const tools = require('auth0-extension-express-tools');
 
 const expressApp = require('./server');
 const config = require('./server/lib/config');
-const logger = require('./server/lib/logger');
+
+
+
+const logger = require('./server/lib/cow');
 
 const createServer = tools.createServer((config, storage) => {
   logger.info('Starting Auth0 Logging Extension - Version:', process.env.CLIENT_VERSION);
