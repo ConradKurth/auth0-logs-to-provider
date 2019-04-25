@@ -12,10 +12,7 @@ const tools = require('auth0-extension-express-tools');
 
 const expressApp = require('./server');
 const config = require('./server/lib/config');
-
-
-
-const logger = require('./server/lib/cow');
+const logger = require('./server/lib/logger');
 
 const createServer = tools.createServer((config, storage) => {
   logger.info('Starting Auth0 Logging Extension - Version:', process.env.CLIENT_VERSION);
