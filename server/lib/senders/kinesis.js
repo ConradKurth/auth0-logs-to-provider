@@ -32,7 +32,7 @@ const logger = require('../logger');
       return callback();
     }
 
-    logs.map(log => ({ PartitionKey: String(numbers.random() * 100000), Data: JSON.stringify(log) }));
+    logs.map(log => ({ PartitionKey: String(Math.random() * 100000), Data: JSON.stringify(log) }));
     var params = {
         Records: records,
         StreamName: config('STREAM_NAME')
