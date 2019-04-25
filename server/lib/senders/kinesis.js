@@ -26,11 +26,12 @@ const logger = require('../logger');
 
 
    return (logs, callback) => {
+    logger.info("Trying to send to kinesis");
     if (!logs || !logs.length) {
       return callback();
     }
 
-     logger.info(`Sending ${logs.length} logs to Kinesis...`);
+    logger.info(`Sending ${logs.length} logs to Kinesis...`);
     // these are the max number of records that can be sent to kinesis
     const chunks = chunk(logs, maxRecords);
 
@@ -44,6 +45,7 @@ const logger = require('../logger');
 
          kinesis.putRecords(params,
         (err, result) => {
+            logger.info(`Results and error ${err}, ${result}`);
             callback(err, result);
         });
     });
