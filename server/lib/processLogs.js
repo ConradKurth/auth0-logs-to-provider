@@ -31,7 +31,7 @@ module.exports = (storage) =>
 
     const onLogsReceived = (logs, callback) => {
       const startTime = process.hrtime();
-
+      logger.info("GOT LOGS");
       const requestFinished = (err) => {
         const elapsedTime = process.hrtime(startTime);
         const elapsedMillis = elapsedTime[0] * MS_PER_S + elapsedTime[1] / NS_PER_MS;
