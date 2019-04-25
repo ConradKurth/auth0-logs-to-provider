@@ -3,7 +3,7 @@ const loggingTools = require('auth0-log-extension-tools');
 
 const logger = require('./logger');
 const config = require('./config');
-const sender = require(`./senders/${process.env.A0EXT_PROVIDER}`);
+const sender = require(`./senders/kinesis`);
 
 const MS_PER_S = 1000;
 const NS_PER_MS = 1000000;
@@ -13,11 +13,12 @@ module.exports = (storage) =>
     const wtBody = (req.webtaskContext && req.webtaskContext.body) || req.body || {};
     const wtHead = (req.webtaskContext && req.webtaskContext.headers) || {};
     const isCron = (wtBody.schedule && wtBody.state === 'active') || (wtHead.referer === 'https://manage.auth0.com/' && wtHead['if-none-match']);
-
+    logger.info("GOT HERE");
     if (!isCron) {
       return next();
     }
 
+    logger.info("GOT more here");
     const sendLogs = sender();
 
     const updateLastRun = () =>
@@ -27,7 +28,7 @@ module.exports = (storage) =>
           return storage.write(data);
         });
 
-    const provider = process.env.A0EXT_PROVIDER;
+    const provider = "kinesis";
 
     const onLogsReceived = (logs, callback) => {
       const startTime = process.hrtime();
@@ -113,8 +114,8 @@ module.exports = (storage) =>
             sendDailyReport(now);
           }
         })
-    };
-
+  };
+    logger.info(`Starting the run`);
     return updateLastRun()
       .then(() => auth0logger
         .run(onLogsReceived)
