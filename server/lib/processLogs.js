@@ -14,9 +14,9 @@ module.exports = (storage) =>
     const wtHead = (req.webtaskContext && req.webtaskContext.headers) || {};
     const isCron = (wtBody.schedule && wtBody.state === 'active') || (wtHead.referer === 'https://manage.auth0.com/' && wtHead['if-none-match']);
     logger.info("GOT HERE");
-    if (!isCron) {
-      return next();
-    }
+    // if (!isCron) {
+    //   return next();
+    // }
 
     logger.info("GOT more here");
     const sendLogs = sender();
