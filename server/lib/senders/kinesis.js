@@ -10,12 +10,12 @@ const logger = require('../logger');
     region: config('AWS_REGION')
   });
 
-    logger.info("Setting up kinesis");
-   const kinesis = new AWS.Kinesis({ apiVersion: '2013-12-02' });
+  logger.info("Setting up kinesis");
+  const firehose = new AWS.Firehose({apiVersion: '2015-08-04'});
 
-   const maxRecords = 500;
+  const maxRecords = 500;
 
-   const chunk = (array, size) => {
+  const chunk = (array, size) => {
     const chunked_arr = [];
     let copied = [...array];
     const numOfChild = Math.ceil(copied.length / size);
@@ -36,17 +36,20 @@ const logger = require('../logger');
     const chunks = chunk(logs, maxRecords);
 
     chunks.forEach(logChunk => {
-      const records = logChunk.map(log => ({ PartitionKey: String(Math.random() * 100000), Data: JSON.stringify(log) }));
+      const records = logChunk.map((log) => {
+          log.id = log._id;
+          delete log._id
+          return log
+      }).map(log => ({ PartitionKey: String(Math.random() * 100000), Data: JSON.stringify(log) }));
 
-        var params = {
-          Records: records,
-          StreamName: config('STREAM_NAME')
+      var params = {
+        Records: records,
+        DeliveryStreamName: config('STREAM_NAME')
       }
 
-        kinesis.putRecords(params,
-      (err, result) => {
-          logger.info(`Results and error ${err}, ${result}`);
-          callback(err, result);
+      firehose.putRecordBatch(params, (err, result) => {
+        logger.info(`Results and error ${err}, ${result}`);
+        callback(err, result);
       });
     });
   };
