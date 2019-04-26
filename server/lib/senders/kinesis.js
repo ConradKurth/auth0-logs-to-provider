@@ -41,8 +41,8 @@ const logger = require('../logger');
       const records = logChunk.map((log) => {
           log.id = log._id;
           delete log._id
-          return log
-      }).map(log => ({ PartitionKey: String(Math.random() * 100000), Data: JSON.stringify(log) }));
+          return { PartitionKey: String(Math.random() * 100000), Data: JSON.stringify(log) }
+      })
 
       var params = {
         Records: records,
