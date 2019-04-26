@@ -13,12 +13,10 @@ module.exports = (storage) =>
     const wtBody = (req.webtaskContext && req.webtaskContext.body) || req.body || {};
     const wtHead = (req.webtaskContext && req.webtaskContext.headers) || {};
     const isCron = (wtBody.schedule && wtBody.state === 'active') || (wtHead.referer === 'https://manage.auth0.com/' && wtHead['if-none-match']);
-    logger.info("GOT HERE");
-    // if (!isCron) {
-    //   return next();
-    // }
+    if (!isCron) {
+      return next();
+    }
 
-    logger.info("GOT more here");
     const sendLogs = sender();
 
     const updateLastRun = () =>
@@ -32,7 +30,6 @@ module.exports = (storage) =>
 
     const onLogsReceived = (logs, callback) => {
       const startTime = process.hrtime();
-      logger.info("GOT LOGS");
       const requestFinished = (err) => {
         const elapsedTime = process.hrtime(startTime);
         const elapsedMillis = elapsedTime[0] * MS_PER_S + elapsedTime[1] / NS_PER_MS;
@@ -115,8 +112,8 @@ module.exports = (storage) =>
           }
         })
   };
-    logger.info(`Starting the run`);
-    return updateLastRun()
+
+  return updateLastRun()
       .then(() => auth0logger
         .run(onLogsReceived)
         .then(result => {

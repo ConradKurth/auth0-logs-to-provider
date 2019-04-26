@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
 
- const config = require('../config');
+const config = require('../config');
 const logger = require('../logger');
 
  module.exports = () => {
@@ -10,7 +10,6 @@ const logger = require('../logger');
     region: config('AWS_REGION')
   });
 
-  logger.info("Setting up kinesis");
   const kinesis = new AWS.Kinesis({ apiVersion: '2013-12-02' });
 
   const maxRecords = 500;
@@ -50,7 +49,6 @@ const logger = require('../logger');
       }
 
       kinesis.putRecords(params, (err, result) => {
-        logger.info(`Results and error ${err}, ${result}`);
         callback(err, result);
       });
     });
