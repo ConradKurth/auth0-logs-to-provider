@@ -11,7 +11,7 @@ const logger = require('../logger');
   });
 
   logger.info("Setting up kinesis");
-  const firehose = new AWS.Firehose({apiVersion: '2015-08-04'});
+  const kinesis = new AWS.Kinesis({ apiVersion: '2013-12-02' });
 
   const maxRecords = 500;
 
@@ -36,6 +36,8 @@ const logger = require('../logger');
     const chunks = chunk(logs, maxRecords);
 
     chunks.forEach(logChunk => {
+
+
       const records = logChunk.map((log) => {
           log.id = log._id;
           delete log._id
@@ -47,7 +49,7 @@ const logger = require('../logger');
         DeliveryStreamName: config('STREAM_NAME')
       }
 
-      firehose.putRecordBatch(params, (err, result) => {
+      kinesis.putRecords(params, (err, result) => {
         logger.info(`Results and error ${err}, ${result}`);
         callback(err, result);
       });
