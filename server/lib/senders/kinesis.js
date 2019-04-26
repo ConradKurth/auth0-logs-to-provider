@@ -46,7 +46,7 @@ const logger = require('../logger');
 
       var params = {
         Records: records,
-        DeliveryStreamName: config('STREAM_NAME')
+        StreamName: config('STREAM_NAME')
       }
 
       kinesis.putRecords(params, (err, result) => {
